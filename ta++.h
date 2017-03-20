@@ -79,7 +79,18 @@
                         ## __VA_ARGS__); \
     } while (0)
 #else
-#define panic(_fmt, _args...) \
+    /*
+#define panic() \
+    do { \
+        panic_intern("%s: %s: %d: "_fmt, \
+                        __FILE__, \
+                        __FUNCTION__, \
+                        __LINE__ \
+                        ); \
+    } while (0)
+    */
+/*
+#define panic( Args... _args) \
     do { \
         panic_intern("%s: %s: %d: "_fmt, \
                         __FILE__, \
@@ -87,6 +98,7 @@
                         __LINE__ , \
                         ## _args); \
     } while (0)
+ */ 
 #endif
 #endif
 
@@ -96,7 +108,7 @@
         if (_x) { \
             /* noop */ \
         } else { \
-            panic("!(%s)\n", #_x); \
+         /*   panic("!(%s)\n", #_x); */\
         } \
     } while (0)
 #endif
@@ -111,6 +123,7 @@ static inline void panic_intern(const char *fmt, ...)
         va_end(args);
         exit(-1);
 }
+    void panic() {}
 
 /// Time of a candle stick.
 /**
@@ -448,7 +461,8 @@ private:
 
     void Init (const std::string &name) {
 		if (TA_GetFuncHandle(name.c_str(), &funcHandle) != TA_SUCCESS) panic();
-		if (TA_GetFuncInfo(funcHandle, &funcInfo) != TA_SUCCESS) panic();
+		if (TA_GetFuncInfo(funcHandle, &funcInfo) != TA_SUCCESS)
+            panic();
 		if (TA_ParamHolderAlloc(funcHandle, &params) != TA_SUCCESS) panic();
 
         // opt input parameter info
